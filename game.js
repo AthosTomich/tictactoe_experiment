@@ -6,6 +6,8 @@ const WINNING_COMBOS = [
   [0, 4, 8], [2, 4, 6],            // diagonals
 ];
 
+const PLAYER_SYMBOLS = { 'X': '🐱', 'O': '🐶' };
+
 /**
  * Returns the initial game state.
  */
@@ -62,5 +64,5 @@ function checkWinner(board) {
 
 // Allow require() in Node.js (Jest) while remaining a plain script in the browser.
 if (typeof module !== 'undefined' && module.exports) {
-  module.exports = { WINNING_COMBOS, createInitialState, getNextPlayer, applyMove, checkWinner };
+  module.exports = { WINNING_COMBOS, createInitialState, getNextPlayer, applyMove, checkWinner, PLAYER_SYMBOLS };
 }
