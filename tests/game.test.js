@@ -305,3 +305,70 @@ describe('checkWinner — result shape', () => {
     });
   });
 });
+
+// ---------------------------------------------------------------------------
+// updateScore / scoreboard
+// ---------------------------------------------------------------------------
+
+describe('updateScore — X wins', () => {
+  test("X's score increases by 1", () => {
+    const scores = createInitialScores();
+    const updated = updateScore(scores, 'X');
+    expect(updated.X).toBe(1);
+  });
+
+  test("O's score remains unchanged when X wins", () => {
+    const scores = createInitialScores();
+    const updated = updateScore(scores, 'X');
+    expect(updated.O).toBe(0);
+  });
+
+  test('X score accumulates across multiple wins', () => {
+    let scores = createInitialScores();
+    scores = updateScore(scores, 'X');
+    scores = updateScore(scores, 'X');
+    expect(scores.X).toBe(2);
+  });
+});
+
+describe('updateScore — O wins', () => {
+  test("O's score increases by 1", () => {
+    const scores = createInitialScores();
+    const updated = updateScore(scores, 'O');
+    expect(updated.O).toBe(1);
+  });
+
+  test("X's score remains unchanged when O wins", () => {
+    const scores = createInitialScores();
+    const updated = updateScore(scores, 'O');
+    expect(updated.X).toBe(0);
+  });
+
+  test('O score accumulates across multiple wins', () => {
+    let scores = createInitialScores();
+    scores = updateScore(scores, 'O');
+    scores = updateScore(scores, 'O');
+    expect(scores.O).toBe(2);
+  });
+});
+
+describe('updateScore — draw', () => {
+  test('neither score changes on a draw (winner is null)', () => {
+    // Draw board: X O X / O O X / X X O
+    const drawBoard = boardFrom('XOXOOXXXO');
+    const result = checkWinner(drawBoard);
+    expect(result.winner).toBeNull();
+
+    const scores = createInitialScores();
+    // A draw means updateScore is never called — scores stay the same
+    expect(scores.X).toBe(0);
+    expect(scores.O).toBe(0);
+  });
+
+  test('does not mutate the original scores object', () => {
+    const scores = createInitialScores();
+    const updated = updateScore(scores, 'X');
+    expect(scores.X).toBe(0); // original unchanged
+    expect(updated.X).toBe(1);
+  });
+});

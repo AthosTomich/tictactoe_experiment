@@ -6,8 +6,16 @@
 const cells      = document.querySelectorAll('.cell');
 const status     = document.getElementById('status');
 const restartBtn = document.getElementById('restart');
+const scoreX     = document.getElementById('score-x');
+const scoreO     = document.getElementById('score-o');
 
-let state = createInitialState();
+let state  = createInitialState();
+let scores = createInitialScores();
+
+function renderScores() {
+  scoreX.textContent = scores.X;
+  scoreO.textContent = scores.O;
+}
 
 function render() {
   cells.forEach((cell, i) => {
@@ -32,6 +40,7 @@ function handleClick(e) {
   state.board = nextBoard;
   render();
 
+  // Animate the placed cell
   cells[idx].classList.add('placed');
 
   const result = checkWinner(state.board);
@@ -39,11 +48,14 @@ function handleClick(e) {
   if (result) {
     state.gameOver = true;
     if (result.winner) {
+      scores = updateScore(scores, result.winner);
+      renderScores();
       result.combo.forEach(i => cells[i].classList.add('winning'));
       setStatus(`Player ${PLAYER_SYMBOLS[result.winner]} wins!`, 'win');
     } else {
       setStatus("It's a draw!", 'draw');
     }
+    // Disable all cells
     cells.forEach(c => (c.disabled = true));
     return;
   }
@@ -63,4 +75,5 @@ restartBtn.addEventListener('click', restartGame);
 
 // Initial render
 render();
+renderScores();
 setStatus(`Player ${PLAYER_SYMBOLS[state.current]}'s turn`);
